@@ -35,8 +35,8 @@ const userSchema = mongoose.Schema({
 userSchema.virtual('password')
   .set(function(password) {
     this._password = password;
-    this.solt = this.makeSalt();
-    this.hashed_password = this.encryptPassword(password)
+    this.salt = this.makeSalt();
+    this.hashed_password = this.encryptPassword(password);
   })
   .get(function() {
     return this._password;
@@ -61,7 +61,7 @@ userSchema.methods = {
   },
 
   makeSalt: function() {
-    return Math.round(new Date().valueOf * Math.random()) + '';
+    return Math.round(new Date().valueOf() * Math.random()) + '';
   }
 };
 
