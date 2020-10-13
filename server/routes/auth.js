@@ -1,10 +1,10 @@
 const express = require('express');
+
+// import controllers
+const { signup } = require('../controllers/auth');
+
 const router = express.Router();
 
-router.get('/signup', (req, res) => {
-  res.json({
-    data: 'You hit sign up endpoint',
-  });
-});
+router.get('/signup', signup);
 
 module.exports = router;
