@@ -35,6 +35,8 @@
       "no-underscore-dangle": 0,
       "jsx-a11y/control-has-associated-label": 0,
       "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": ["error"]
+        "@typescript-eslint/no-use-before-define": ["error"],
+        "jsx-a11y/label-has-associated-control": 0,
+        "consistent-return": 0
     }
 }

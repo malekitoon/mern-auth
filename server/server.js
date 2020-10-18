@@ -28,6 +28,7 @@ mongoose
 
 // import routes
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 
 // app middlewares
 app.use(morgan('dev'));
@@ -39,6 +40,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // middlewares
 app.use('/api', authRoutes);
+app.use('/api', userRoutes);
 
 app.listen(port, () => {
   console.log(`API is now running on port ${port}`);

@@ -5,17 +5,16 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Layout from '../core/Layout';
-import { isAuth } from './helpers';
+import { authenticate, isAuth } from './helpers';
 
-const Signup = props => {
+const Signin = ({ history }) => {
   const [values, setValues] = useState({
-    name: '',
     email: '',
     password: '',
     bottomText: 'Submit',
   });
 
-  const { name, email, password, bottomText } = values;
+  const { email, password, bottomText } = values;
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
@@ -27,34 +26,30 @@ const Signup = props => {
 
     axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_API}/signup`,
-      data: { name, email, password },
+      url: `${process.env.REACT_APP_API}/signin`,
+      data: { email, password },
     })
       .then(response => {
-        console.log('SIGNUP SUCCESS', response);
-        setValues({ ...values, name: '', email: '', password: '', bottomText: 'Submitted' });
-        toast.success(response.data.message);
+        console.log('SIGNIN SUCCESS', response);
+        authenticate(response, () => {
+          setValues({ ...values, email: '', password: '', bottomText: 'Submitted' });
+          // toast.success(`Hey ${response.data.user.name}, welcome back!`);
+          if (isAuth() && isAuth().role === 'admin') {
+            history.push('/admin');
+          } else {
+            history.push('/private');
+          }
+        });
       })
       .catch(err => {
-        console.log('SIGNUP ERROR', err);
+        console.log('SIGNIN ERROR', err);
         setValues({ ...values, bottomText: 'Submit' });
         toast.error(err.response.data.error);
       });
   };
 
-  const signupForm = () => (
+  const signinForm = () => (
     <form>
-      <div className='form-group'>
-        <label htmlFor='name' className='text-muted'>Name</label>
-        <input
-          type='text'
-          id='name'
-          className='form-control'
-          value={name}
-          onChange={handleChange('name')}
-        />
-      </div>
-
       <div className='form-group'>
         <label htmlFor='email' className='text-muted'>Email</label>
         <input
@@ -88,13 +83,13 @@ const Signup = props => {
       <div className='col-md-6 offset-md-3'>
         <ToastContainer />
         {isAuth() ? <Redirect to='/' /> : null}
-        <h1 className='p-5 text-center'>Sign Up</h1>
-        {signupForm()}
+        <h1 className='p-5 text-center'>Sign In</h1>
+        {signinForm()}
       </div>
     </Layout>
   );
 };
 
-Signup.propTypes = {};
+Signin.propTypes = { history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired };
 
-export default Signup;
+export default Signin;

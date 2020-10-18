@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const expressJwt = require('express-jwt');
 const { sendEmailWithNodemailer } = require('../helpers/email');
 
 exports.signup = (req, res) => {
@@ -11,28 +12,28 @@ exports.signup = (req, res) => {
       if (user) {
         return res.status(400).json({ error: 'Email is taken'});
       }
+
+      const token = jwt.sign(
+        { name, email, password },
+        process.env.JWT_ACCOUNT_ACTIVATION,
+        { expiresIn: '10m' },
+      );
+    
+      const emailData = {
+        from: 'MERN-AUTH <process.env.GMAIL_EMAIL>',
+        to: email,
+        subject: 'Account activation link',
+        html: `
+          <h1>Please use this link to activate your account</h1>
+          <p>${process.env.CLIENT_URL}/auth/activate/${token}</p>
+          <hr />
+          <p>This email may contain sensitive information</p>
+          <p>${process.env.CLIENT_URL}</p>
+        `,
+      };
+    
+      sendEmailWithNodemailer(req, res, emailData);
     });
-
-  const token = jwt.sign(
-    { name, email, password },
-    process.env.JWT_ACCOUNT_ACTIVATION,
-    { expiresIn: '10m' },
-  );
-
-  const emailData = {
-    from: 'MERN-AUTH <process.env.GMAIL_EMAIL>',
-    to: email,
-    subject: 'Account activation link',
-    html: `
-      <h1>Please use this link to activate your account</h1>
-      <p>${process.env.CLIENT_URL}/auth/activate/${token}</p>
-      <hr />
-      <p>This email may contain sensitive information</p>
-      <p>${process.env.CLIENT_URL}</p>
-    `,
-  };
-
-  sendEmailWithNodemailer(req, res, emailData);
 };
 
 exports.accountActivation = (req, res) => {
@@ -85,6 +86,11 @@ exports.signin = (req, res) => {
       return res.json({ token, user: { _id, name, email, role }});
     });
 };
+
+exports.requireSignin = expressJwt({
+  secret: process.env.JWT_SECRET, // req.user
+  algorithms: ['HS256'],
+});
 
 // exports.signup = (req, res) => {
 //   const { name, email, password } = req.body;
