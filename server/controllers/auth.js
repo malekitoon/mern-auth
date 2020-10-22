@@ -92,6 +92,24 @@ exports.requireSignin = expressJwt({
   algorithms: ['HS256'],
 });
 
+exports.adminMiddleware = (req, res, next) => {
+  User
+    .findById(req.user._id)
+    .exec((err, user) => {
+      if (err || !user) {
+        return res.status(400).json({ error: 'User not found'});
+      }
+
+      if (user.role !== 'admin') {
+        return res.status(400).json({ error: 'Admin resourse. Access denied.'});
+      }
+
+      req.profile = user;
+
+      next();
+    })
+};
+
 // exports.signup = (req, res) => {
 //   const { name, email, password } = req.body;
 
