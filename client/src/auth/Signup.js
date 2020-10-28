@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import Layout from '../core/Layout';
 import { isAuth } from './helpers';
 
-const Signup = props => {
+const Signup = () => {
   const [values, setValues] = useState({
     name: '',
     email: '',
@@ -90,6 +89,13 @@ const Signup = props => {
         {isAuth() ? <Redirect to='/' /> : null}
         <h1 className='p-5 text-center'>Sign Up</h1>
         {signupForm()}
+        <br />
+        <Link
+          to='/auth/password/forgot'
+          className='btn btn-sm btn-outline-danger'
+        >
+          Forgot password
+        </Link>
       </div>
     </Layout>
   );

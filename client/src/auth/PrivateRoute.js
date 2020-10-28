@@ -14,6 +14,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-PrivateRoute.propTypes = {};
+PrivateRoute.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  component: PropTypes.any.isRequired,
+  location: PropTypes.shape({ pathname: PropTypes.string }),
+};
+
+PrivateRoute.defaultProps = { location: null };
 
 export default PrivateRoute;

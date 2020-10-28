@@ -14,6 +14,12 @@ const AdminRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-AdminRoute.propTypes = {};
+AdminRoute.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  component: PropTypes.any.isRequired,
+  location: PropTypes.shape({ pathname: PropTypes.string }),
+};
+
+AdminRoute.defaultProps = { location: null };
 
 export default AdminRoute;

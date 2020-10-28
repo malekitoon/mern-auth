@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Layout from '../core/Layout';
 import { authenticate, isAuth } from './helpers';
+import Google from './Google';
 
 const Signin = ({ history }) => {
   const [values, setValues] = useState({
@@ -18,6 +19,17 @@ const Signin = ({ history }) => {
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const informParent = response => {
+    console.log('SIGNIN SUCCESS', response);
+    authenticate(response, () => {
+      if (isAuth() && isAuth().role === 'admin') {
+        history.push('/admin');
+      } else {
+        history.push('/private');
+      }
+    });
   };
 
   const clickSubmit = event => {
@@ -84,7 +96,15 @@ const Signin = ({ history }) => {
         <ToastContainer />
         {isAuth() ? <Redirect to='/' /> : null}
         <h1 className='p-5 text-center'>Sign In</h1>
+        <Google informParent={informParent} />
         {signinForm()}
+        <br />
+        <Link
+          to='/auth/password/forgot'
+          className='btn btn-sm btn-outline-danger'
+        >
+          Forgot password
+        </Link>
       </div>
     </Layout>
   );
@@ -92,4 +112,4 @@ const Signin = ({ history }) => {
 
 Signin.propTypes = { history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired };
 
-export default Signin;
+export default withRouter(Signin);

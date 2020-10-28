@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { ToastContainer, toast } from 'react-toastify';
@@ -11,7 +10,6 @@ const Activate = ({ match }) => {
   const [values, setValues] = useState({
     name: '',
     token: '',
-    show: true,
   });
 
   useEffect(() => {
@@ -24,7 +22,7 @@ const Activate = ({ match }) => {
     }
   }, []);
 
-  const { name, token, show } = values;
+  const { name, token } = values;
 
   const clickSubmit = event => {
     event.preventDefault();
@@ -37,7 +35,6 @@ const Activate = ({ match }) => {
       .then(response => {
         console.log('ACTIVATE SUCCESS', response);
         // save the response to localStorage/cookies
-        setValues({ ...values, show: false });
         toast.success(response.data.message);
       })
       .catch(err => {
@@ -74,6 +71,11 @@ const Activate = ({ match }) => {
   );
 };
 
-Activate.propTypes = {};
+Activate.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({ token: PropTypes.string }).isRequired,
+    dummy: PropTypes.string,
+  }).isRequired,
+};
 
 export default Activate;

@@ -11,6 +11,12 @@ const Layout = ({ children, match, history }) => {
     return { color: '#fff' };
   };
 
+  const handleSignout = () => {
+    signout(() => {
+      history.push('/');
+    });
+  };
+
   const nav = () => (
     <ul className='nav nav-tabs bg-primary'>
       <li className='nav-item'>
@@ -30,17 +36,14 @@ const Layout = ({ children, match, history }) => {
               </Link>
             </li>
             <li className='nav-item'>
-              <span
-                className='nav-link'
+              <button
+                className='btn btn-link nav-link'
                 style={{ cursor: 'pointer', color: '#fff' }}
-                onClick={() => {
-                  signout(() => {
-                    history.push('/');
-                  });
-                }}
+                onClick={handleSignout}
+                type='submit'
               >
                 Sign out
-              </span>
+              </button>
             </li>
           </>
         )
